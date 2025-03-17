@@ -7,7 +7,7 @@ class SubmitForm(models.Model):
     problemdate = models.DateTimeField(null=True)  # Changed to DateField for user input
     machinename = models.CharField(max_length=100)
     machinecode = models.CharField(max_length=100)
-    machineplacecode = models.CharField(max_length=100)
+    machineplacecode = models.CharField(max_length=100, default="MDF1")
     stoptime = models.DateTimeField(null=True)  # Removed auto_now_add
     failuretime = models.TimeField(null=True)  # Removed auto_now_add
     operatorname = models.CharField(max_length=100)
