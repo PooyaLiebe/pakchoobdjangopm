@@ -1,44 +1,64 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
+import React, { useState } from "react";
 import Header from "../Components/Common/Header";
 import "../Styles/SubmitForm.css";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState, useEffect } from "react";
 import api from "../api.js";
 
 const SubmitForm = () => {
   const [values, setValues] = useState({
     formcode: "",
-    problem_date: "",
-    production_stop: "خیر",
-    section: "",
-    machine_name: "",
-    machine_code: "",
-    machine_place_code: "",
-    stop_time: "",
-    failure_time: "",
-    shift: "",
-    suggest_time: "",
-    work_suggest: "",
-    fix_repair: "",
-    report_inspection: "",
-    fault_dm: "",
-    operator_name: "",
-    problem_description: "",
+    problemdate: "",
+    productionstop: "خیر",
+    section: "Chipper",
+    machinename: "",
+    machinecode: "",
+    machineplacecode: "",
+    stoptime: "",
+    failuretime: "",
+    shift: "A",
+    suggesttime: "فوری",
+    worksuggest: "اضطراری",
+    fixrepair: "درخواست اپراتور",
+    reportinspection: "بازرسی فنی",
+    faultdm: "اختلال در کارکرد",
+    operatorname: "",
+    problemdescription: "",
   });
+
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
-  const createSubmitForm = (e) => {
+
+  const createSubmitForm = async (e) => {
     e.preventDefault();
-    api
-      .post("/api/submitform/", values)
-      .then((res) => {
-        if (res.status === 200) alert("Form Submitted!!");
-        else alert("Failed to submit form");
-      })
-      .catch((err) => alert(err));
+
+    // Format problemdate and stoptime to ISO format if necessary
+    const formattedValues = {
+      ...values,
+      problemdate: new Date(values.problemdate).toISOString().slice(0, 19), // Remove milliseconds for consistency
+      stoptime: new Date(values.stoptime).toISOString().slice(0, 19),
+      failuretime: values.failuretime + ":00", // Ensure time format is HH:MM:SS
+      suggesttime: values.suggesttime + ":00", // Ensure time format is HH:MM:SS
+    };
+
+    console.log("Submitting form with values:", formattedValues); // Log the data to check
+
+    try {
+      const res = await api.post("/api/submitform/", formattedValues);
+      console.log("Response:", res);
+
+      if (res.status === 200 || res.status === 201) {
+        alert("Form Submitted Successfully!");
+      } else {
+        alert(`Failed to submit form: ${res.status} ${res.statusText}`);
+      }
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      alert("An error occurred while submitting the form.");
+    }
   };
+
   return (
     <AnimatePresence>
       <motion.div
@@ -48,357 +68,181 @@ const SubmitForm = () => {
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.3 }}
       >
-        <Header title={"Submit Form"} />
+        <Header title="Submit Form" />
         <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
-          <div className="body  dark:bg-secondary-dark-bg rounded-3xl">
+          <div className="body dark:bg-secondary-dark-bg rounded-3xl">
             <div className="container bg-gray-800">
               <header className="text-white">ثبت فرم</header>
               <form onSubmit={createSubmitForm}>
                 <div className="form first">
                   <div className="details personal">
                     <div className="fields">
-                      <div className="input-field">
-                        <label
-                          htmlFor="formcode"
-                          className="flex justify-center text-center"
-                        >
-                          شماره درخواست
-                        </label>
-                        <input
-                          type="text"
-                          id="formcode"
-                          name="formcode"
-                          value={values.formcode}
-                          onChange={handleChange}
-                          placeholder="شماره درخواست"
-                          className="outline-none text-14 w-full font-normal flex justify-center text-center  items-center rounded-md shadow-lg border-2 p-2 h-11 m-2"
-                        />
-                      </div>
-                      <div className="input-field">
-                        <label
-                          htmlFor="problemdate"
-                          className="flex justify-center items-center"
-                        >
-                          تاریخ بروز مشکل
-                        </label>
-                        <input
-                          type="datetime-local"
-                          name="problem_date"
-                          value={values.problem_date}
-                          onChange={handleChange}
-                          className="outline-none text-12 w-[full] sm:w-full font-normal flex justify-center text-center  items-center rounded-md shadow-lg border-2"
-                          id="problemdate"
-                        />
-                      </div>
-                      <div className="input-field">
-                        <label
-                          htmlFor="productionstop"
-                          className="flex justify-center items-center"
-                        >
-                          مشکل باعث توقف خط شده است ؟
-                        </label>
-                        <select
-                          name="production_stop"
-                          className="text-center"
-                          value={values.production_stop}
-                          onChange={handleChange}
-                          id="productionstop"
-                        >
-                          <option value="خیر">خیر</option>
-                          <option value="بله">بله</option>
-                        </select>
-                      </div>
-                      <div className="input-field">
-                        <label
-                          htmlFor="section"
-                          className="flex justify-center items-center"
-                        >
-                          بخش
-                        </label>
-                        <select
-                          name="section"
-                          id="section"
-                          value={values.section}
-                          onChange={handleChange}
-                          className="text-center"
-                          required
-                        >
-                          <option value="Chipper">Chipper</option>
-                          <option value="Conveyor Line">Conveyor Line</option>
-                          <option value="Dryer & Air Grader">
-                            Dryer & Air Grader
-                          </option>
-                          <option value="Refiner">Refiner</option>
-                          <option value="Before Press">Before Press</option>
-                          <option value="Press">Press</option>
-                          <option value="After Press">After Press</option>
-                          <option value="Sanding">Sanding</option>
-                          <option value="Cooling System">Cooling System</option>
-                          <option value="Steam Boiler">Steam Boiler</option>
-                          <option value="General">General</option>
-                        </select>
-                      </div>
-                      <div className="input-field">
-                        <label
-                          htmlFor="machinename"
-                          className="flex justify-center items-center"
-                        >
-                          نام دستگاه
-                        </label>
-                        <input
-                          type="text"
-                          name="machine_name"
-                          value={values.machine_name}
-                          onChange={handleChange}
-                          placeholder="نام دستگاه را وارد کنید"
-                          id="machinename"
-                          className="text-center"
-                          required
-                        />
-                      </div>
-                      <div className="input-field">
-                        <label
-                          htmlFor="machinecode"
-                          className="flex justify-center items-center"
-                        >
-                          کد دستگاه
-                        </label>
-                        <input
-                          type="text"
-                          name="machine_code"
-                          value={values.machine_code}
-                          onChange={handleChange}
-                          placeholder="کد دستگاه را وارد کنید"
-                          id="machinecode"
-                          className="text-center"
-                          required
-                        />
-                      </div>
-                      <div className="input-field">
-                        <label
-                          htmlFor="machineplacecode"
-                          className="flex justify-center items-center"
-                        >
-                          کد محل استقرار دستگاه
-                        </label>
-                        <input
-                          type="text"
-                          name="machine_place_code"
-                          value={values.machine_place_code}
-                          onChange={handleChange}
-                          placeholder="کد محل استقرار دستگاه را وارد کنید"
-                          id="machineplacecode"
-                          className="text-center"
-                          required
-                        />
-                      </div>
-                      <div className="input-field">
-                        <label
-                          htmlFor="stoptime"
-                          className="flex justify-center items-center"
-                        >
-                          ساعت شروع توقف
-                        </label>
-                        <input
-                          type="datetime-local"
-                          value={values.stop_time}
-                          onChange={handleChange}
-                          name="stop_time"
-                          id="stoptime"
-                          className="outline-none text-14 w-full font-normal flex justify-center text-center items-center rounded-md shadow-lg border-2 p-2 h-11 m-2"
-                        />
-                      </div>
-                      <div className="input-field">
-                        <label
-                          htmlFor="failuretime"
-                          className="flex justify-center items-center"
-                        >
-                          میزان ساعت کار تجهیز در زمان بروز عیب
-                        </label>
-                        <input
-                          type="text"
-                          name="failure_time"
-                          value={values.failure_time}
-                          onChange={handleChange}
-                          id="failuretime"
-                          className="text-center"
-                          placeholder="میزان ساعت کار را وارد کنید"
-                          required
-                        />
-                      </div>
-                      <div className="input-field">
-                        <label
-                          htmlFor="shift"
-                          className="flex justify-center items-center"
-                        >
-                          شیفت
-                        </label>
-                        <select
-                          name="shift"
-                          value={values.shift}
-                          onChange={handleChange}
-                          className="text-center"
-                          id="shift"
-                          required
-                        >
-                          <option value="A">A</option>
-                          <option value="B">B</option>
-                          <option value="C">C</option>
-                        </select>
-                      </div>
-                      <div className="input-field">
-                        <label
-                          htmlFor="suggesttime"
-                          className="flex justify-center items-center"
-                        >
-                          زمان پیشنهادی برای شروع تعمیر
-                        </label>
-                        <select
-                          name="suggest_time"
-                          value={values.suggest_time}
-                          onChange={handleChange}
-                          className="text-center"
-                          id="suggesttime"
-                          required
-                        >
-                          <option value="فوری">فوری</option>
-                          <option value="ساعات آتی">ساعات آتی</option>
-                          <option value="اولین روز کاری">اولین روز کاری</option>
-                          <option value="در اولین فرصت">در اولین فرصت</option>
-                        </select>
-                      </div>
-                      <div className="input-field">
-                        <label
-                          htmlFor="worksuggest"
-                          className="flex justify-center items-center"
-                        >
-                          نوع کار درخواستی
-                        </label>
-                        <select
-                          name="work_suggest"
-                          value={values.work_suggest}
-                          onChange={handleChange}
-                          className="text-center"
-                          id="worksuggest"
-                          required
-                        >
-                          <option value="اضطراری">اضطراری</option>
-                          <option value="بهسازی">بهسازی</option>
-                          <option value="پایش وضعیت(غیر برنامهای)">
-                            پایش وضعیت(غیر برنامه ای)
-                          </option>
-                          <option value="آماده سازی برای تعمیرات">
-                            آماده سازی برای تعمیر
-                          </option>
-                          <option value="خدمات عمومی">خدمات عمومی</option>
-                        </select>
-                      </div>
-                      <div className="input-field">
-                        <label
-                          htmlFor="fixrepair"
-                          className="flex justify-center items-center"
-                        >
-                          تعمیر و تعویض اصلاحی ناشی از
-                        </label>
-                        <select
-                          name="fix_repair"
-                          value={values.fix_repair}
-                          onChange={handleChange}
-                          className="text-center"
-                          id="fixrepair"
-                          required
-                        >
-                          <option value="درخواست اپراتور">
-                            درخواست اپراتور
-                          </option>
-                          <option value="درخواست واحد نت">
-                            درخواست واحد نت
-                          </option>
-                          <option value="گزارش واحد ایمنی">
-                            گزارش واحد ایمنی
-                          </option>
-                          <option value="آماده سازی برای تعمیر">
-                            آماده سازی برای تعمیر
-                          </option>
-                          <option value="خدمات عمومی">خدمات عمومی</option>
-                        </select>
-                      </div>
-                      <div className="input-field">
-                        <label
-                          htmlFor="reportinseption"
-                          className="flex justify-center items-center"
-                        >
-                          گزارش بازرسی
-                        </label>
-                        <select
-                          name="report_inspection"
-                          value={values.report_inspection}
-                          onChange={handleChange}
-                          className="text-center"
-                          id="reportinseption"
-                          required
-                        >
-                          <option value="بازرسی فنی">بازرسی فنی</option>
-                          <option value="واحد نت">واحد نت</option>
-                          <option value="اپراتور">اپراتور</option>
-                          <option value="سایر">سایر</option>
-                        </select>
-                      </div>
-                      <div className="input-field">
-                        <label
-                          htmlFor="faultdm"
-                          className="flex justify-center items-center"
-                        >
-                          روش کشف عیب
-                        </label>
-                        <select
-                          name="fault_dm"
-                          value={values.fault_dm}
-                          onChange={handleChange}
-                          className="text-center"
-                          id="faultdm"
-                          required
-                        >
-                          <option value="اختلال در کارکرد">
-                            اختلال در کارکرد
-                          </option>
-                          <option value="تعمیرات دوره ای">
-                            تعمیرات دوره ای
-                          </option>
-                          <option value="مشاهده تصادفی">مشاهده تصادفی</option>
-                          <option value="بازرسی دوره ای">بازرسی دوره ای</option>
-                          <option value="تست عملکرد">تست عملکرد</option>
-                          <option value="پایش وضعیت دوره ای">
-                            پایش وضعیت دوره ای
-                          </option>
-                          <option value="آماده به کار نبودن در حین نیاز">
-                            آماده به کار نبودن در حین نیاز
-                          </option>
-                          <option value="در حین انجام تعمیرات اصلاحی">
-                            در حین انجام تعیرات اصلاحی
-                          </option>
-                          <option value="فالت با آلارم">فالت با آلارم</option>
-                          <option value="سایر روش ها">سایر</option>
-                        </select>
-                      </div>
-                      <div className="input-field">
-                        <label
-                          htmlFor="operatorname"
-                          className="flex justify-center items-center"
-                        >
-                          نام اپراتور
-                        </label>
-                        <input
-                          type="text"
-                          name="operator_name"
-                          value={values.operator_name}
-                          onChange={handleChange}
-                          id="operatorname"
-                          className="text-center"
-                          placeholder="نام اپراتور را وارد کنید"
-                          required
-                        />
-                      </div>
+                      {[
+                        {
+                          label: "شماره درخواست",
+                          name: "formcode",
+                          type: "text",
+                        },
+                        {
+                          label: "تاریخ بروز مشکل",
+                          name: "problemdate",
+                          type: "datetime-local",
+                        },
+                        {
+                          label: "نام دستگاه",
+                          name: "machinename",
+                          type: "text",
+                        },
+                        {
+                          label: "کد دستگاه",
+                          name: "machinecode",
+                          type: "text",
+                        },
+                        {
+                          label: "کد محل استقرار دستگاه",
+                          name: "machineplacecode",
+                          type: "text",
+                        },
+                        {
+                          label: "ساعت شروع توقف",
+                          name: "stoptime",
+                          type: "datetime-local",
+                        },
+                        {
+                          label: "میزان ساعت کار تجهیز در زمان بروز عیب",
+                          name: "failuretime",
+                          type: "time",
+                        },
+                        {
+                          label: "نام اپراتور",
+                          name: "operatorname",
+                          type: "text",
+                        },
+                      ].map((field) => (
+                        <div className="input-field" key={field.name}>
+                          <label
+                            htmlFor={field.name}
+                            className="flex justify-center text-center"
+                          >
+                            {field.label}
+                          </label>
+                          <input
+                            type={field.type}
+                            id={field.name}
+                            name={field.name}
+                            value={values[field.name]}
+                            onChange={handleChange}
+                            placeholder={field.label}
+                            className="text-center"
+                          />
+                        </div>
+                      ))}
+
+                      {[
+                        {
+                          label: "مشکل باعث توقف خط شده است؟",
+                          name: "productionstop",
+                          options: ["خیر", "بله"],
+                        },
+                        {
+                          label: "بخش",
+                          name: "section",
+                          options: [
+                            "Chipper",
+                            "Conveyor Line",
+                            "Dryer & Air Grader",
+                            "Refiner",
+                            "Before Press",
+                            "Press",
+                            "After Press",
+                            "Sanding",
+                            "Cooling System",
+                            "Steam Boiler",
+                            "General",
+                          ],
+                        },
+                        {
+                          label: "شیفت",
+                          name: "shift",
+                          options: ["A", "B", "C"],
+                        },
+                        {
+                          label: "زمان پیشنهادی برای شروع تعمیر",
+                          name: "suggesttime",
+                          options: [
+                            "فوری",
+                            "ساعات آتی",
+                            "اولین روز کاری",
+                            "در اولین فرصت",
+                          ],
+                        },
+                        {
+                          label: "نوع کار درخواستی",
+                          name: "worksuggest",
+                          options: [
+                            "اضطراری",
+                            "بهسازی",
+                            "پایش وضعیت(غیر برنامه ای)",
+                            "آماده سازی برای تعمیر",
+                            "خدمات عمومی",
+                          ],
+                        },
+                        {
+                          label: "تعمیر و تعویض اصلاحی ناشی از",
+                          name: "fixrepair",
+                          options: [
+                            "درخواست اپراتور",
+                            "درخواست واحد نت",
+                            "گزارش واحد ایمنی",
+                            "آماده سازی برای تعمیر",
+                            "خدمات عمومی",
+                          ],
+                        },
+                        {
+                          label: "گزارش بازرسی",
+                          name: "reportinspection",
+                          options: ["بازرسی فنی", "واحد نت", "اپراتور", "سایر"],
+                        },
+                        {
+                          label: "روش کشف عیب",
+                          name: "faultdm",
+                          options: [
+                            "اختلال در کارکرد",
+                            "تعمیرات دوره ای",
+                            "مشاهده تصادفی",
+                            "بازرسی دوره ای",
+                            "تست عملکرد",
+                            "پایش وضعیت دوره ای",
+                            "آماده به کار نبودن در حین نیاز",
+                            "در حین انجام تعیرات اصلاحی",
+                            "فالت با آلارم",
+                            "سایر روش ها",
+                          ],
+                        },
+                      ].map((field) => (
+                        <div className="input-field" key={field.name}>
+                          <label
+                            htmlFor={field.name}
+                            className="flex justify-center items-center"
+                          >
+                            {field.label}
+                          </label>
+                          <select
+                            id={field.name}
+                            name={field.name}
+                            value={values[field.name]}
+                            onChange={handleChange}
+                            className="text-center"
+                          >
+                            {field.options.map((option) => (
+                              <option key={option} value={option}>
+                                {option}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      ))}
+
                       <div className="input-field">
                         <label
                           htmlFor="problemdescription"
@@ -407,16 +251,16 @@ const SubmitForm = () => {
                           کلیات شرح عیب مشاهده شده
                         </label>
                         <textarea
-                          name="problem_description"
-                          value={values.problem_description}
-                          onChange={handleChange}
                           id="problemdescription"
+                          name="problemdescription"
+                          value={values.problemdescription}
+                          onChange={handleChange}
                           className="text-center"
-                          placeholder="کلیات شرح عیب مشاهده شده را توضیح دهید : "
-                          required
+                          placeholder="کلیات شرح مشاهده شده"
                         />
                       </div>
                     </div>
+
                     <button type="submit" className="nextBtn">
                       ثبت
                     </button>

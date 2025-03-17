@@ -1,0 +1,24 @@
+  // const [filteredForms, setFilteredForms] = useState(categoryData);
+
+  // const handleSearch = (e) => {
+  //   const term = e.target.value.toLowerCase();
+  //   setSearchTerm(term);
+  //   const filtered = categoryData.filter(
+  //     (form) =>
+  //       form.section.toLowerCase().includes(term) ||
+  //       form.machinename.toLowerCase().includes(term)
+  //   );
+  //   setFilteredForms(filtered);
+  // };
+
+
+// const categoryData = [
+//   {
+//     id: 1,
+//     section: "Sanding",
+//     machinename: "Push Feeder",
+//     equipmentname: "Pusher",
+//     operatorname: "Pooya Payvar",
+//     technician: "Mechanic",
+//   },
+// ];
