@@ -28,6 +28,10 @@ function Logout() {
   return <Navigate to={"/login"} />;
 }
 
+function RegisterAndLogout() {
+  localStorage.clear();
+  return <Register />;
+}
 function App() {
   const location = useLocation();
   const showSidebar = !["/login", "/register", "/"].includes(location.pathname);
@@ -46,15 +50,8 @@ function App() {
       <Routes>
         <Route path="/start" element={<Start />} />
         <Route path="/login" element={<Login />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/" element={<RegisterAndLogout />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/forms" element={<Forms />} />
         <Route path="/submitform" element={<SubmitForm />} />

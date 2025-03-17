@@ -4,8 +4,41 @@ import Header from "../Components/Common/Header";
 import "../Styles/SubmitForm.css";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import api from "../api.js";
 
 const SubmitForm = () => {
+  const [values, setValues] = useState({
+    formcode: "",
+    problem_date: "",
+    production_stop: "خیر",
+    section: "",
+    machine_name: "",
+    machine_code: "",
+    machine_place_code: "",
+    stop_time: "",
+    failure_time: "",
+    shift: "",
+    suggest_time: "",
+    work_suggest: "",
+    fix_repair: "",
+    report_inspection: "",
+    fault_dm: "",
+    operator_name: "",
+    problem_description: "",
+  });
+  const handleChange = (e) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
+  const createSubmitForm = (e) => {
+    e.preventDefault();
+    api
+      .post("/api/submitform/", values)
+      .then((res) => {
+        if (res.status === 200) alert("Form Submitted!!");
+        else alert("Failed to submit form");
+      })
+      .catch((err) => alert(err));
+  };
   return (
     <AnimatePresence>
       <motion.div
@@ -20,7 +53,7 @@ const SubmitForm = () => {
           <div className="body  dark:bg-secondary-dark-bg rounded-3xl">
             <div className="container bg-gray-800">
               <header className="text-white">ثبت فرم</header>
-              <form>
+              <form onSubmit={createSubmitForm}>
                 <div className="form first">
                   <div className="details personal">
                     <div className="fields">
@@ -34,9 +67,11 @@ const SubmitForm = () => {
                         <input
                           type="text"
                           id="formcode"
+                          name="formcode"
+                          value={values.formcode}
+                          onChange={handleChange}
                           placeholder="شماره درخواست"
                           className="outline-none text-14 w-full font-normal flex justify-center text-center  items-center rounded-md shadow-lg border-2 p-2 h-11 m-2"
-                          required
                         />
                       </div>
                       <div className="input-field">
@@ -48,10 +83,11 @@ const SubmitForm = () => {
                         </label>
                         <input
                           type="datetime-local"
-                          name="problemdate"
+                          name="problem_date"
+                          value={values.problem_date}
+                          onChange={handleChange}
                           className="outline-none text-12 w-[full] sm:w-full font-normal flex justify-center text-center  items-center rounded-md shadow-lg border-2"
                           id="problemdate"
-                          required
                         />
                       </div>
                       <div className="input-field">
@@ -62,10 +98,11 @@ const SubmitForm = () => {
                           مشکل باعث توقف خط شده است ؟
                         </label>
                         <select
-                          name="productionstop"
+                          name="production_stop"
                           className="text-center"
+                          value={values.production_stop}
+                          onChange={handleChange}
                           id="productionstop"
-                          required
                         >
                           <option value="خیر">خیر</option>
                           <option value="بله">بله</option>
@@ -81,6 +118,8 @@ const SubmitForm = () => {
                         <select
                           name="section"
                           id="section"
+                          value={values.section}
+                          onChange={handleChange}
                           className="text-center"
                           required
                         >
@@ -108,7 +147,9 @@ const SubmitForm = () => {
                         </label>
                         <input
                           type="text"
-                          name="machinename"
+                          name="machine_name"
+                          value={values.machine_name}
+                          onChange={handleChange}
                           placeholder="نام دستگاه را وارد کنید"
                           id="machinename"
                           className="text-center"
@@ -124,7 +165,9 @@ const SubmitForm = () => {
                         </label>
                         <input
                           type="text"
-                          name="machinecode"
+                          name="machine_code"
+                          value={values.machine_code}
+                          onChange={handleChange}
                           placeholder="کد دستگاه را وارد کنید"
                           id="machinecode"
                           className="text-center"
@@ -140,7 +183,9 @@ const SubmitForm = () => {
                         </label>
                         <input
                           type="text"
-                          name="machineplacecode"
+                          name="machine_place_code"
+                          value={values.machine_place_code}
+                          onChange={handleChange}
                           placeholder="کد محل استقرار دستگاه را وارد کنید"
                           id="machineplacecode"
                           className="text-center"
@@ -156,10 +201,11 @@ const SubmitForm = () => {
                         </label>
                         <input
                           type="datetime-local"
-                          name="stoptime"
+                          value={values.stop_time}
+                          onChange={handleChange}
+                          name="stop_time"
                           id="stoptime"
                           className="outline-none text-14 w-full font-normal flex justify-center text-center items-center rounded-md shadow-lg border-2 p-2 h-11 m-2"
-                          required
                         />
                       </div>
                       <div className="input-field">
@@ -171,7 +217,9 @@ const SubmitForm = () => {
                         </label>
                         <input
                           type="text"
-                          name="failuretime"
+                          name="failure_time"
+                          value={values.failure_time}
+                          onChange={handleChange}
                           id="failuretime"
                           className="text-center"
                           placeholder="میزان ساعت کار را وارد کنید"
@@ -187,6 +235,8 @@ const SubmitForm = () => {
                         </label>
                         <select
                           name="shift"
+                          value={values.shift}
+                          onChange={handleChange}
                           className="text-center"
                           id="shift"
                           required
@@ -204,7 +254,9 @@ const SubmitForm = () => {
                           زمان پیشنهادی برای شروع تعمیر
                         </label>
                         <select
-                          name="suggesttime"
+                          name="suggest_time"
+                          value={values.suggest_time}
+                          onChange={handleChange}
                           className="text-center"
                           id="suggesttime"
                           required
@@ -223,7 +275,9 @@ const SubmitForm = () => {
                           نوع کار درخواستی
                         </label>
                         <select
-                          name="worksuggest"
+                          name="work_suggest"
+                          value={values.work_suggest}
+                          onChange={handleChange}
                           className="text-center"
                           id="worksuggest"
                           required
@@ -247,7 +301,9 @@ const SubmitForm = () => {
                           تعمیر و تعویض اصلاحی ناشی از
                         </label>
                         <select
-                          name="fixrepair"
+                          name="fix_repair"
+                          value={values.fix_repair}
+                          onChange={handleChange}
                           className="text-center"
                           id="fixrepair"
                           required
@@ -275,7 +331,9 @@ const SubmitForm = () => {
                           گزارش بازرسی
                         </label>
                         <select
-                          name="reportinseption"
+                          name="report_inspection"
+                          value={values.report_inspection}
+                          onChange={handleChange}
                           className="text-center"
                           id="reportinseption"
                           required
@@ -294,7 +352,9 @@ const SubmitForm = () => {
                           روش کشف عیب
                         </label>
                         <select
-                          name="faultdm"
+                          name="fault_dm"
+                          value={values.fault_dm}
+                          onChange={handleChange}
                           className="text-center"
                           id="faultdm"
                           required
@@ -330,7 +390,9 @@ const SubmitForm = () => {
                         </label>
                         <input
                           type="text"
-                          name="operatorname"
+                          name="operator_name"
+                          value={values.operator_name}
+                          onChange={handleChange}
                           id="operatorname"
                           className="text-center"
                           placeholder="نام اپراتور را وارد کنید"
@@ -345,7 +407,9 @@ const SubmitForm = () => {
                           کلیات شرح عیب مشاهده شده
                         </label>
                         <textarea
-                          name="problemdescription"
+                          name="problem_description"
+                          value={values.problem_description}
+                          onChange={handleChange}
                           id="problemdescription"
                           className="text-center"
                           placeholder="کلیات شرح عیب مشاهده شده را توضیح دهید : "
