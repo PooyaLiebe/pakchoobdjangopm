@@ -48,10 +48,10 @@ function App() {
       {showSidebar && <Sidebar />}
 
       <Routes>
-        <Route path="/start" element={<Start />} />
+        <Route path="/" element={<Start />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/" element={<RegisterAndLogout />} />
+        <Route path="/registeruser" element={<RegisterAndLogout />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/forms" element={<Forms />} />
         <Route path="/submitform" element={<SubmitForm />} />

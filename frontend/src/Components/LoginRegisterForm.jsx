@@ -34,7 +34,7 @@ const Login = ({ route, method }) => {
   };
 
   return (
-    <div className="grid place-items-center h-screen">
+    <div className="login-container">
       <div className="wrapper">
         <form onSubmit={handleSubmit}>
           {error && <div className="text-danger">{error}</div>}
