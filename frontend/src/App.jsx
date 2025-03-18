@@ -34,7 +34,9 @@ function RegisterAndLogout() {
 }
 function App() {
   const location = useLocation();
-  const showSidebar = !["/login", "/register", "/"].includes(location.pathname);
+  const showSidebar = !["/login", "/registeruser", "/"].includes(
+    location.pathname
+  );
 
   return (
     <div className="flex h-screen bg-gray-900 text-gray-100 overflow-hidden">
@@ -51,7 +53,7 @@ function App() {
         <Route path="/" element={<Start />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/registeruser" element={<RegisterAndLogout />} />
+        <Route path="/register" element={<RegisterAndLogout />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/forms" element={<Forms />} />
         <Route path="/submitform" element={<SubmitForm />} />
