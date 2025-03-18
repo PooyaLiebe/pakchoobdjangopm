@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Edit, Search, Trash } from "lucide-react";
+import { Edit, Search, Send, Trash } from "lucide-react";
 import api from "../api.js";
+import { Tooltip } from "@mui/material";
 
 const FormTable = () => {
   const [submitform, setSubmitform] = useState([]);
@@ -140,13 +141,23 @@ const FormTable = () => {
                 <td className="px-6 py-4 text-gray-300">
                   {form.problemdescription || "N/A"}
                 </td>
-                <td className="px-6 py-4">
-                  <button className="text-indigo-400 hover:text-indigo-300 mr-2">
-                    <Edit size={18} />
-                  </button>
-                  <button className="text-red-400 hover:text-red-300">
-                    <Trash size={18} />
-                  </button>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                  <Tooltip title={"Edit"} placement="top">
+                    {" "}
+                    <button className="text-indigo-400 hover:text-indigo-300 mr-2 cursor-pointer">
+                      <Edit size={18} />
+                    </button>
+                  </Tooltip>
+                  <Tooltip title={"Delete"} placement="top">
+                    <button className="text-red-400 hover:text-red-300 mr-2 cursor-pointer">
+                      <Trash size={18} />
+                    </button>
+                  </Tooltip>
+                  <Tooltip title={"Send"} placement="top">
+                    <button className="text-pink-500 hover:text-pink-300 cursor-pointer">
+                      <Send size={18} />
+                    </button>
+                  </Tooltip>
                 </td>
               </motion.tr>
             ))}
