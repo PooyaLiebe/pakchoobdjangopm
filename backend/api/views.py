@@ -2,8 +2,26 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from .serializers import UserSerializer, SubmitFormSerializer
-from .models import SubmitForm
+from .models import SubmitForm, LoginForm
+
+
+@api_view(["POST"])
+def api_login(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+
+    try:
+        user = LoginForm.object.get(username=username, password=password)
+        return Response(
+            {"status": "success", "username": user.username, "role": user.role}
+        )
+    except LoginForm.DoesNotExist:
+        return Response(
+            {"status": "error", "message": "Inavlid Credentials"}, status=401
+        )
 
 
 class FormListCreate(generics.ListCreateAPIView):

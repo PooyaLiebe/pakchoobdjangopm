@@ -1,4 +1,10 @@
 from django.contrib import admin
-from .models import SubmitForm
+from .models import SubmitForm, LoginForm
 
-admin.site.register(SubmitForm)
+
+class LoginAdmin(admin.ModelAdmin):
+    list_display = ["username", "password", "role"]
+
+
+admin.site.register(SubmitForm, LoginAdmin)
+admin.site.register(LoginForm)
