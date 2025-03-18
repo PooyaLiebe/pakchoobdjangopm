@@ -29,10 +29,6 @@ const Forms = () => {
         {/* Form */}
         <FormTable />
         {/* CHARTS */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <EmOverviewChart />
-          <FormOverviewPieChart />
-        </div>
       </main>
     </div>
   );

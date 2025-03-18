@@ -6,12 +6,6 @@ import api from "../api.js";
 
 const FormTable = () => {
   const [submitform, setSubmitform] = useState([]);
-  const [section, setSection] = useState("");
-  const [machinename, setMachinename] = useState("");
-  const [equipmentname, setEquipmentname] = useState("");
-  const [operatorname, setOperatorname] = useState("");
-  const [technician, setTechnician] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     getForm();
@@ -37,16 +31,6 @@ const FormTable = () => {
     >
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold text-gray-100">Form list</h2>
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search Form..."
-            className="bg-gray-700 placeholder-gray-400 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
-        </div>
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-700">
@@ -109,78 +93,63 @@ const FormTable = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-700">
-            {submitform
-              .filter(
-                (form) =>
-                  form.machinename
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  form.operatorname
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  form.technician
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-              )
-              .map((form) => (
-                <motion.tr key={form.id}>
-                  <td className="px-6 py-4 text-gray-100">{form.formcode}</td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.problemdate}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.productionstop || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">{form.section}</td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.machinename || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.machinecode || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.machineplacecode || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.stoptime || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.failuretime || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.shift || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.suggesttime || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.worksuggest || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.fixrepair || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.reportinspection || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.faultdm || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.operatorname || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.problemdescription || "N/A"}
-                  </td>
-                  <td className="px-6 py-4">
-                    <button className="text-indigo-400 hover:text-indigo-300 mr-2">
-                      <Edit size={18} />
-                    </button>
-                    <button className="text-red-400 hover:text-red-300">
-                      <Trash size={18} />
-                    </button>
-                  </td>
-                </motion.tr>
-              ))}
+            {submitform.map((form) => (
+              <motion.tr key={form.id}>
+                <td className="px-6 py-4 text-gray-100">{form.formcode}</td>
+                <td className="px-6 py-4 text-gray-300">{form.problemdate}</td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.productionstop || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">{form.section}</td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.machinename || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.machinecode || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.machineplacecode || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.stoptime || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.failuretime || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.shift || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.suggesttime || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.worksuggest || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.fixrepair || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.reportinspection || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.faultdm || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.operatorname || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.problemdescription || "N/A"}
+                </td>
+                <td className="px-6 py-4">
+                  <button className="text-indigo-400 hover:text-indigo-300 mr-2">
+                    <Edit size={18} />
+                  </button>
+                  <button className="text-red-400 hover:text-red-300">
+                    <Trash size={18} />
+                  </button>
+                </td>
+              </motion.tr>
+            ))}
           </tbody>
         </table>
       </div>
