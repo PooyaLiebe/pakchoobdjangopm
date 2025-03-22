@@ -9,11 +9,12 @@ const SubmitForm = () => {
   const [values, setValues] = useState({
     formcode: "",
     problemdate: "",
-    productionstop: "خیر",
+    productionstop: "خیر", // Moved productionstop to first section
     section: "Chipper",
     machinename: "",
     machinecode: "",
     machineplacecode: "",
+    unit: "",
     stoptime: "",
     failuretime: "",
     shift: "A",
@@ -30,24 +31,30 @@ const SubmitForm = () => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
+  const handleProductionStopChange = (e) => {
+    const { value } = e.target;
+    if (value === "خیر") {
+      setValues({ ...values, productionstop: value, stoptime: "" });
+    } else {
+      setValues({ ...values, productionstop: value });
+    }
+  };
+
   const createSubmitForm = async (e) => {
     e.preventDefault();
 
-    // Format problemdate and stoptime to ISO format if necessary
     const formattedValues = {
       ...values,
-      problemdate: new Date(values.problemdate).toISOString().slice(0, 19), // Remove milliseconds for consistency
+      problemdate: new Date(values.problemdate).toISOString().slice(0, 19),
       stoptime: new Date(values.stoptime).toISOString().slice(0, 19),
-      failuretime: values.failuretime + ":00", // Ensure time format is HH:MM:SS
-      suggesttime: values.suggesttime + ":00", // Ensure time format is HH:MM:SS
+      failuretime: values.failuretime + ":00",
+      suggesttime: values.suggesttime + ":00",
     };
 
-    console.log("Submitting form with values:", formattedValues); // Log the data to check
+    console.log("Submitting form with values:", formattedValues);
 
     try {
       const res = await api.post("/api/submitform/", formattedValues);
-      console.log("Response:", res);
-
       if (res.status === 200 || res.status === 201) {
         alert("Form Submitted Successfully!");
       } else {
@@ -89,6 +96,17 @@ const SubmitForm = () => {
                           type: "datetime-local",
                         },
                         {
+                          label: "ساعت شروع توقف",
+                          name: "stoptime",
+                          type: "datetime-local",
+                        }, // Stoptime is here
+                        {
+                          label: "مشکل باعث توقف خط شده است؟",
+                          name: "productionstop",
+                          options: ["خیر", "بله"],
+                          onChange: handleProductionStopChange,
+                        }, // Moved productionstop here
+                        {
                           label: "نام دستگاه",
                           name: "machinename",
                           type: "text",
@@ -104,9 +122,15 @@ const SubmitForm = () => {
                           type: "text",
                         },
                         {
-                          label: "ساعت شروع توقف",
-                          name: "stoptime",
-                          type: "datetime-local",
+                          label: "واحد مربوطه",
+                          name: "unit",
+                          options: [
+                            "مکانیک",
+                            "برق",
+                            "تاسیسات",
+                            "تولید",
+                            "فلزکاری",
+                          ],
                         },
                         {
                           label: "میزان ساعت کار تجهیز در زمان بروز عیب",
@@ -126,24 +150,39 @@ const SubmitForm = () => {
                           >
                             {field.label}
                           </label>
-                          <input
-                            type={field.type}
-                            id={field.name}
-                            name={field.name}
-                            value={values[field.name]}
-                            onChange={handleChange}
-                            placeholder={field.label}
-                            className="text-center"
-                          />
+                          {field.options ? (
+                            <select
+                              id={field.name}
+                              name={field.name}
+                              value={values[field.name]}
+                              onChange={field.onChange || handleChange}
+                              className="text-center"
+                            >
+                              {field.options.map((option) => (
+                                <option key={option} value={option}>
+                                  {option}
+                                </option>
+                              ))}
+                            </select>
+                          ) : (
+                            <input
+                              type={field.type}
+                              id={field.name}
+                              name={field.name}
+                              value={values[field.name]}
+                              onChange={handleChange}
+                              placeholder={field.label}
+                              className="text-center"
+                              disabled={
+                                field.name === "stoptime" &&
+                                values.productionstop === "خیر"
+                              }
+                            />
+                          )}
                         </div>
                       ))}
 
                       {[
-                        {
-                          label: "مشکل باعث توقف خط شده است؟",
-                          name: "productionstop",
-                          options: ["خیر", "بله"],
-                        },
                         {
                           label: "بخش",
                           name: "section",
@@ -227,19 +266,31 @@ const SubmitForm = () => {
                           >
                             {field.label}
                           </label>
-                          <select
-                            id={field.name}
-                            name={field.name}
-                            value={values[field.name]}
-                            onChange={handleChange}
-                            className="text-center"
-                          >
-                            {field.options.map((option) => (
-                              <option key={option} value={option}>
-                                {option}
-                              </option>
-                            ))}
-                          </select>
+                          {field.options ? (
+                            <select
+                              id={field.name}
+                              name={field.name}
+                              value={values[field.name]}
+                              onChange={handleChange}
+                              className="text-center"
+                            >
+                              {field.options.map((option) => (
+                                <option key={option} value={option}>
+                                  {option}
+                                </option>
+                              ))}
+                            </select>
+                          ) : (
+                            <input
+                              type={field.type}
+                              id={field.name}
+                              name={field.name}
+                              value={values[field.name]}
+                              onChange={handleChange}
+                              placeholder={field.label}
+                              className="text-center"
+                            />
+                          )}
                         </div>
                       ))}
 

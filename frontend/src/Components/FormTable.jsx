@@ -36,7 +36,9 @@ const FormTable = () => {
       transition={{ duration: 0.2 }}
     >
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-100">Form list</h2>
+        <h2 className="text-xl font-semibold text-gray-100">
+          فرم های ثبت شده توسط درخواست دهنده
+        </h2>
         <div className="relative">
           <input
             type="text"
