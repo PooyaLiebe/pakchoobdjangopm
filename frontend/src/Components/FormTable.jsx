@@ -1,17 +1,12 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Edit, Search, Trash } from "lucide-react";
+import { Edit, Search, Send, Trash } from "lucide-react";
 import api from "../api.js";
+import { Tooltip } from "@mui/material";
 
 const FormTable = () => {
   const [submitform, setSubmitform] = useState([]);
-  const [section, setSection] = useState("");
-  const [machinename, setMachinename] = useState("");
-  const [equipmentname, setEquipmentname] = useState("");
-  const [operatorname, setOperatorname] = useState("");
-  const [technician, setTechnician] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     getForm();
@@ -111,78 +106,73 @@ const FormTable = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-700">
-            {submitform
-              .filter(
-                (form) =>
-                  form.machinename
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  form.operatorname
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  form.technician
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-              )
-              .map((form) => (
-                <motion.tr key={form.id}>
-                  <td className="px-6 py-4 text-gray-100">{form.formcode}</td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.problemdate}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.productionstop || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">{form.section}</td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.machinename || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.machinecode || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.machineplacecode || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.stoptime || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.failuretime || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.shift || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.suggesttime || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.worksuggest || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.fixrepair || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.reportinspection || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.faultdm || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.operatorname || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {form.problemdescription || "N/A"}
-                  </td>
-                  <td className="px-6 py-4">
-                    <button className="text-indigo-400 hover:text-indigo-300 mr-2">
+            {submitform.map((form) => (
+              <motion.tr key={form.id}>
+                <td className="px-6 py-4 text-gray-100">{form.formcode}</td>
+                <td className="px-6 py-4 text-gray-300">{form.problemdate}</td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.productionstop || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">{form.section}</td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.machinename || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.machinecode || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.machineplacecode || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.stoptime || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.failuretime || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.shift || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.suggesttime || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.worksuggest || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.fixrepair || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.reportinspection || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.faultdm || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.operatorname || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {form.problemdescription || "N/A"}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                  <Tooltip title={"Edit"} placement="top">
+                    {" "}
+                    <button className="text-indigo-400 hover:text-indigo-300 mr-2 cursor-pointer">
                       <Edit size={18} />
                     </button>
-                    <button className="text-red-400 hover:text-red-300">
+                  </Tooltip>
+                  <Tooltip title={"Delete"} placement="top">
+                    <button className="text-red-400 hover:text-red-300 mr-2 cursor-pointer">
                       <Trash size={18} />
                     </button>
-                  </td>
-                </motion.tr>
-              ))}
+                  </Tooltip>
+                  <Tooltip title={"Send"} placement="top">
+                    <button className="text-pink-500 hover:text-pink-300 cursor-pointer">
+                      <Send size={18} />
+                    </button>
+                  </Tooltip>
+                </td>
+              </motion.tr>
+            ))}
           </tbody>
         </table>
       </div>

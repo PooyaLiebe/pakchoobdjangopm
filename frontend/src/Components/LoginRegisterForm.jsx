@@ -9,6 +9,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants.js";
 const Login = ({ route, method }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("Admin");
   const [error, setError] = useState();
   const navigate = useNavigate();
 
@@ -18,7 +19,7 @@ const Login = ({ route, method }) => {
     e.preventDefault();
 
     try {
-      const res = await api.post(route, { username, password });
+      const res = await api.post(route, { username, password, role });
       if (method === "login") {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
@@ -60,6 +61,17 @@ const Login = ({ route, method }) => {
               required
             />
             <FaLock className="icon" />
+          </div>
+          <div className="input-box">
+            <select
+              value={role} // This sets the default value when the component loads
+              onChange={(e) => setRole(e.target.value)} // Handles the selection changes
+              required
+            >
+              <option value="Admin">Admin</option>
+              <option value="Technician">Technician</option>
+              <option value="Operator">Operator</option>
+            </select>
           </div>
           <button type="submit">{name}</button>
         </form>

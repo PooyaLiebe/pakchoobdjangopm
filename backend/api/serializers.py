@@ -6,11 +6,11 @@ from .models import SubmitForm
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username", "password"]
+        fields = ["username", "password"]
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
-        print(validated_data)
+        # Use Django's create_user method to hash passwords
         user = User.objects.create_user(**validated_data)
         return user
 

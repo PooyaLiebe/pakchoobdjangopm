@@ -2,6 +2,9 @@ from django.contrib import admin
 from .models import SubmitForm
 
 
+
+
+
 class SubmitFormAdmin(admin.ModelAdmin):
     list_display = [
         "id",
